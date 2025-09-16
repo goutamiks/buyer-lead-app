@@ -92,22 +92,3 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
-  try {
-    const ownerId = await resolveOwnerIdForRequest();
-    if (ownerId === null) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const result = await prisma.buyer.deleteMany({ where: { id: params.id, ownerId } });
-    if (result.count === 0) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
-    }
-    return new NextResponse(null, { status: 204 });
-  } catch (error) {
-    console.error("/api/buyers/[id] DELETE error", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-  }
-}
-
-
